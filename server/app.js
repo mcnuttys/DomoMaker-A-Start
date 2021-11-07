@@ -25,20 +25,20 @@ mongoose.connect(dbUrl, (err) => {
 
 let redisURL = {
   hostname: 'redis-15586.c89.us-east-1-3.ec2.cloud.redislabs.com',
-  port: '15586'
-}
+  port: '15586',
+};
 
 let redisPASS = 'S0hrI1LP3VrCFhhaX43bcZvPKOqUuMaU';
 
 if (process.env.REDISCLOUD_URL) {
   redisURL = url.parse(process.env.REDISCLOUD_URL);
-  [, redisPass] = redisURL.auth.split(':');
+  [, redisPASS] = redisURL.auth.split(':');
 }
 
 const redisClient = redis.createClient({
   host: redisURL.hostname,
   port: redisURL.port,
-  password: redisPASS
+  password: redisPASS,
 });
 
 const router = require('./router.js');
@@ -60,7 +60,7 @@ app.use(session({
   saveUninitialized: true,
   cookie: {
     httpOnly: true,
-  }
+  },
 }));
 app.engine('handlebars', expressHandlebars({ defaultLayout: 'main' }));
 app.set('view engine', 'handlebars');
@@ -72,9 +72,9 @@ app.use(csrf());
 app.use((err, req, res, next) => {
   if (err.code !== 'EBADCSRFTOKEN') return next(err);
 
-  console.log("Missing csrf token");
+  console.log('Missing csrf token');
   return false;
-})
+});
 
 router(app);
 
